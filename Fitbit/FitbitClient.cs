@@ -563,6 +563,38 @@ namespace Fitbit.Api
 
         #endregion
 
-        
+        #region Upload methods
+
+        /// <summary>
+        /// Used to upload a new Activity
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public Activity UploadActivity(ActivityLog activity, DateTime activityDate)
+        {
+            string apiCall = UploadActivityApiExtentionURL(activity, activityDate);
+
+            RestRequest request = new RestRequest(apiCall, Method.POST);
+
+            var response = restClient.Execute<Fitbit.Models.Activity>(request);
+
+            HandleResponseCode(response.StatusCode);
+
+            //Console.WriteLine(response.ToString());
+            //Console.WriteLine(response.Content);
+            //Console.WriteLine(response.Data.steps);
+
+            return response.Data;
+        }
+
+        private string UploadActivityApiExtentionURL(ActivityLog activity, DateTime activityDate)
+        {
+            const string ApiExtention =
+                "/1/user/-/activities/.xml?activityName={0}&manualCalories{1}&startTime={2}&durationMillis{3}&date={4}";
+            return string.Format(ApiExtention, activity.Name, activity.Calories.ToString(),
+                activity.StartTime, activity.Duration.ToString(), activityDate.ToString("yyyy-MM-dd"));
+        }
+
+        #endregion
     }
 }
