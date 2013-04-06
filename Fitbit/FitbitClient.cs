@@ -572,27 +572,89 @@ namespace Fitbit.Api
         /// <returns></returns>
         public Activity UploadActivity(ActivityLog activity, DateTime activityDate)
         {
-            string apiCall = UploadActivityApiExtentionURL(activity, activityDate);
+            string apiCall = "/1/user/-/activities.json";
 
             RestRequest request = new RestRequest(apiCall, Method.POST);
+
+            if (activity.ActivityId != 0)
+                request.AddParameter("activityId", activity.ActivityId);
+            else
+                request.AddParameter("activityName", activity.Name);
+
+            request.AddParameter("manualCalories", activity.Calories);
+            request.AddParameter("startTime", activity.StartTime);
+            request.AddParameter("durationMillis", activity.Duration);
+            request.AddParameter("date", activityDate.ToString("yyyy-MM-dd"));
 
             var response = restClient.Execute<Fitbit.Models.Activity>(request);
 
             HandleResponseCode(response.StatusCode);
 
-            //Console.WriteLine(response.ToString());
-            //Console.WriteLine(response.Content);
-            //Console.WriteLine(response.Data.steps);
+            return response.Data;
+        }
+
+        /// <summary>
+        /// Used to upload a new Heart log
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public HeartRate UploadHR(HeartLog heartLog)
+        {
+            string apiCall = "/1/user/-/heart.json";
+
+            RestRequest request = new RestRequest(apiCall, Method.POST);
+
+            request.AddParameter("tracker", heartLog.Tracker);
+            request.AddParameter("heartRate", heartLog.HeartRate);
+            request.AddParameter("date", heartLog.Date);
+
+            if (!string.IsNullOrWhiteSpace(heartLog.Time))
+                request.AddParameter("time", heartLog.Time);
+
+            var response = restClient.Execute<Fitbit.Models.HeartRate>(request);
+
+            HandleResponseCode(response.StatusCode);
 
             return response.Data;
         }
 
-        private string UploadActivityApiExtentionURL(ActivityLog activity, DateTime activityDate)
+        #endregion
+
+        #region Delete methods
+
+        private void DeleteRequest(string apiCall)
         {
-            const string ApiExtention =
-                "/1/user/-/activities/.xml?activityName={0}&manualCalories{1}&startTime={2}&durationMillis{3}&date={4}";
-            return string.Format(ApiExtention, activity.Name, activity.Calories.ToString(),
-                activity.StartTime, activity.Duration.ToString(), activityDate.ToString("yyyy-MM-dd"));
+            RestRequest request = new RestRequest(apiCall, Method.DELETE);
+
+            var response = restClient.Execute(request);
+
+            HandleResponseCode(response.StatusCode);
+        }
+
+        /// <summary>
+        /// Used to delete an existing Activity
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public void DeleteActivity(long logId)
+        {
+            string apiCall = string.Format("/1/user/-/activities/{0}.json", logId);
+
+            DeleteRequest(apiCall);
+        }
+
+        /// <summary>
+        /// Used to delete an existing Heart log
+        /// </summary>
+        /// <param name="client"></param>
+        /// <returns></returns>
+        public void DeleteHR(long heartLogId)
+        {
+            string apiCall = string.Format("/1/user/-/heart/{0}.xml", heartLogId);
+
+            RestRequest request = new RestRequest(apiCall, Method.DELETE);
+
+            DeleteRequest(apiCall);
         }
 
         #endregion

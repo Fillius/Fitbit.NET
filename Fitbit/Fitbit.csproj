@@ -66,6 +66,9 @@
     <Compile Include="Models\Enums\APICollectionType.cs" />
     <Compile Include="Models\Enums\DeviceType.cs" />
     <Compile Include="Models\Enums\ResourceOwnerType.cs" />
+    <Compile Include="Models\Heart.cs" />
+    <Compile Include="Models\HeartAverage.cs" />
+    <Compile Include="Models\HeartLog.cs" />
     <Compile Include="Models\TimeSeriesDataListInt.cs" />
     <Compile Include="Models\Device.cs" />
     <Compile Include="Models\Friend.cs" />
