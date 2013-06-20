@@ -80,6 +80,19 @@ namespace Fitbit.Api
 
         }
 
+        public FavoriteActivities GetFavoriteActivities()
+        {
+            string apiCall = "/1/user/-/activities/favorite.xml";
+
+            RestRequest request = new RestRequest(apiCall);
+
+            var response = restClient.Execute<Fitbit.Models.FavoriteActivities>(request);
+
+            HandleResponseCode(response.StatusCode);
+
+            return response.Data;
+        }
+
         public ActivitySummary GetDayActivitySummary(DateTime activityDate)
         {
             //RestClient client = new RestClient(baseApiUrl);

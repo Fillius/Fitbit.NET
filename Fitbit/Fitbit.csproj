@@ -63,6 +63,8 @@
     </Compile>
     <Compile Include="Models\ApiSubscription.cs" />
     <Compile Include="Models\AuthCredential.cs" />
+    <Compile Include="Models\ActivityReference.cs" />
+    <Compile Include="Models\FavoriteActivities.cs" />
     <Compile Include="Models\Enums\APICollectionType.cs" />
     <Compile Include="Models\Enums\DeviceType.cs" />
     <Compile Include="Models\Enums\ResourceOwnerType.cs" />
